@@ -29,7 +29,7 @@ app.use(
 
 
 app.get('/',(req,res,next)=>{
-    res.json({data:"hello chilli"})
+    res.json({data:"hello anurag"})
 });
 
 
