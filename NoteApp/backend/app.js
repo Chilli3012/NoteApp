@@ -13,9 +13,10 @@ connectDB();
 
 // Middleware
 app.use(cors({
-    origin: "*", // Allow requests from all origins; restrict as needed
+    origin: ["http://localhost:5173", "https://note-app-six-drab.vercel.app/"],
     credentials: true,
 }));
+
 
 app.use(express.json());
 
