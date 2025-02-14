@@ -18,7 +18,7 @@ const allowedOrigins = [
     "http://192.168.0.187:3000",
     "https://note-app-six-drab.vercel.app", // Deployed frontend on Vercel
     "https://silly-kelpie-977318.netlify.app",
-    "https://note-app-6799.netlify.app/"// Deployed frontend on Netlify
+    "https://note-app-6799.netlify.app"// Deployed frontend on Netlify
 ];
 
 const corsOptions = {
