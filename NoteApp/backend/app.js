@@ -13,7 +13,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-    origin: ["http://localhost:5173", "https://note-app-six-drab.vercel.app/"],
+    origin: ["http://localhost:5173", "https://note-app-anurags-projects-f957d74e.vercel.app"],
     credentials: true,
 }));
 
