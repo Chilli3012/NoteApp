@@ -1,13 +1,13 @@
-const mongoose=require("mongoose");
-const Schema=mongoose.Schema;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const userSchema=new Schema({
-    title:{type:String, require:true},
-    content:{type:String, require:true},
-    tags:{type:[String], default:[]},
-    isPinned:{type:Boolean, default: false},
-    userId:{type:String, required: true},
-    createdOn:{type:Date, default: new Date().getTime()},
+const noteSchema = new Schema({
+    title: { type: String, required: true, trim: true },
+    content: { type: String, required: true, trim: true },
+    tags: { type: [String], default: [] },
+    isPinned: { type: Boolean, default: false },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    createdOn: { type: Date, default: Date.now },
 });
-module.exports=mongoose.model("Note",userSchema)
 
+module.exports = mongoose.model("Note", noteSchema);

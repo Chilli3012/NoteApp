@@ -69,7 +69,7 @@ function AddEditNotes({noteData,type,getAllNotes,onClose, showToastMessage}) {
 
     }
   return (
-    <div className='relative'>
+    <div className='relative bg-teal-50 dark:bg-indigo-200'>
         <button className='w-10 h-10 rounded-full flex items-center justify-center absolute -top-3 -right-3 hover:bg-slate-200' onClick={onClose}> 
             <MdClose className='text-xl text-slate-400'/>
         </button>

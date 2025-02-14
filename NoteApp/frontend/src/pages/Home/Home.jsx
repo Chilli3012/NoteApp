@@ -10,6 +10,7 @@ import moment from "moment";
 import Toast from '../../components/ToastMessage/Toast.jsx'
 import { useEffect } from "react"
 import EmptyCard from "../../components/EmptyCard/EmptyCard.jsx"
+import SecondaryNavbar from "../../components/Navbar/SecondaryNavbar.jsx"
 
 function Home() {
 
@@ -27,10 +28,10 @@ function Home() {
 
   const [allNotes,setAllNotes]=useState([])
   const [userInfo, setUserInfo]=useState(null);
-
   const [isSearch,setIsSearch]=useState(false);
-
   const navigate=useNavigate();
+  const [filteredNotes, setFilteredNotes] = useState([]);
+  const [tags, setTags] = useState([]);
 
 
   const handleEdit=(noteDetails)=>{
@@ -57,7 +58,7 @@ function Home() {
   // getting user info 
   const getUserInfo=async()=>{
     try{
-      const response=await axiosInstance.get("get-user");
+      const response=await axiosInstance.get("/get-user");
       if(response.data && response.data.user){
         setUserInfo(response.data.user);
       }
@@ -70,14 +71,21 @@ function Home() {
   };
 
 // get all note info 
-const getAllNotes=async()=>{
-  try{
-    const response=await axiosInstance.get("/get-all-notes")
-    if (response.data && response.data.notes){
+const getAllNotes = async () => {
+  try {
+    const response = await axiosInstance.get("/get-all-notes");
+    if (response.data && response.data.notes) {
       setAllNotes(response.data.notes);
+      setFilteredNotes(response.data.notes);
+
+      // Extract unique tags
+      const uniqueTags = [
+        ...new Set(response.data.notes.flatMap((note) => note.tags || [])),
+      ];
+      setTags(uniqueTags);
     }
-  }catch(error){
-    console.log("An unexpected error occured. Try again later!")
+  } catch (error) {
+    console.log("An unexpected error occurred. Try again later!");
   }
 };
 
@@ -101,21 +109,22 @@ const deleteNote=async(data)=>{
 }
 
 
-// search for a not 
-const onSearchNote=async (query) =>{
+// search for a note 
+const onSearchNote = async (query) => {
   try {
-    const response=await axiosInstance.get("/search-notes",{
-      params:{query},
+    const response = await axiosInstance.get("/search-notes", {
+      params: { query },
     });
-    if(response.data && response.data.notes){
-      setIsSearch(true);
-      setAllNotes(response.data.notes);
+
+    if (response.data && response.data.notes) {
+      setIsSearch(true); // Indicate a search is in progress
+      setFilteredNotes(response.data.notes); // Update filtered notes with search results
     }
   } catch (error) {
-    console.log(error);
-    
+    console.error("Error during search:", error);
   }
-}
+};
+
 
 const handleClearSearch=()=>{
   setIsSearch(false);
@@ -139,6 +148,32 @@ const updateIsPinned=async(noteData)=>{
   }
 }
 
+const handleFilterTag = (tag) => {
+  const filtered = allNotes.filter((note) =>
+    (note.tags || []).some((noteTag) => noteTag.toLowerCase() === tag.toLowerCase())
+  );
+  setFilteredNotes(filtered);
+};
+
+
+const clearTagFilter = () => {
+  setFilteredNotes(allNotes);
+};
+
+const onFilterTags = async (selectedTags) => {
+  try {
+    const response = await axiosInstance.get("/filter-notes", {
+      params: { tags: selectedTags }, // Pass the selected tags as an array
+    });
+
+    if (response.data && response.data.notes) {
+      setFilteredNotes(response.data.notes); // Update state with filtered notes
+    }
+  } catch (error) {
+    console.error("Error filtering notes:", error);
+  }
+};
+
 
 useEffect(() => {
   getAllNotes()
@@ -151,10 +186,22 @@ useEffect(() => {
 
   return (
     <>
-      <Navbar userInfo={userInfo} onSearchNote={onSearchNote} handleClearSearch={handleClearSearch}/>
-      <div className='container mx-auto'>
+      <Navbar 
+        userInfo={userInfo} 
+        onSearchNote={onSearchNote} 
+        handleClearSearch={handleClearSearch}
+      />
+      <SecondaryNavbar
+        tags={tags}
+        onFilterTags={onFilterTags}
+        clearTagFilter={() => {
+          clearTagFilter(); // Reset notes in parent
+          setActiveTags([]); // Reset tags in child
+        }}
+      />
+      <div className='container mx-auto dark:bg-gray-900'>
         {allNotes.length>0 ? (<div className='grid grid-cols-3 gap-4 mt-8'>
-          {allNotes.map((item,index)=>(
+          {filteredNotes.map((item)=>(
             // console.log(item)
             <NoteCard
               key={item._id}
@@ -171,11 +218,15 @@ useEffect(() => {
         </div>):<EmptyCard/>}
       </div>
 
-      <button className='w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-500 absolute bottom-3 left-[93.5%] z-10' onClick={()=>{
-        setOpenModal({isShown:true,type:"add",data:null});
-      }}>
-        <MdAdd className="text-[32px] text-white"/>
-      </button>
+      <button
+  className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-500 fixed bottom-5 right-5 z-10"
+  onClick={() => {
+    setOpenModal({ isShown: true, type: "add", data: null });
+  }}
+>
+  <MdAdd className="text-[32px] text-white" />
+</button>
+
 
       <Modal 
         isOpen={openModal.isShown}
@@ -186,7 +237,7 @@ useEffect(() => {
           },
         }}
         contentLabel=""
-        className=" w-[35%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-scroll"
+        className=" w-[35%] max-h-3/4 bg-teal-50 rounded-md mx-auto mt-14 p-5 overflow-scroll dark:bg-indigo-200"
       >
         <AddEditNotes
         type={openModal.type}

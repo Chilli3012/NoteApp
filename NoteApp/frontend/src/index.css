@@ -73,8 +73,9 @@ button:focus-visible {
 
 @layer base{
   body{
-    background-color: azure;
+    background-color: rgb(218, 255, 255);
     overflow-x: hidden;
+    @apply dark:bg-gray-900
   }
 }
 @layer components{

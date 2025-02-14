@@ -35,7 +35,7 @@ function TagInput({tags,setTags}) {
             ))}
         </div>)}
         <div className='flex items-center gap-4 mt-3'>
-            <input value={inputvalue} type="text" className='text-sm bg-transparent  px-3 py-2 border-2 bg-slate-50 rounded-lg' placeholder='Add Tag' onChange={inputchnage} onKeyDown={handleKeyDown}/>
+            <input value={inputvalue} type="text" className='text-sm bg-transparent  px-3 py-2 border-2 outline-none bg-slate-50 rounded-lg p-2' placeholder='Add Tag' onChange={inputchnage} onKeyDown={handleKeyDown}/>
             <button className='w-8 h-8 flex items-center justify-center rounded border border-black hover:bg-black' onClick={()=>{addtag();}}>
                 <MdAdd className='text-2xl text-blue-700 hover:text-white'/>
             </button>
