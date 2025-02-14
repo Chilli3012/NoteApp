@@ -11,13 +11,11 @@ const app = express();
 // Connect to the database
 connectDB();
 
-// Middleware
-const cors = require("cors");
-
 // Dynamically set allowed origins based on the request origin
 const allowedOrigins = [
     "http://localhost:5173",    // Local development (Vite)
     "http://localhost:3000",    // Local testing of build (npx serve)
+    "http://192.168.0.187:3000",
     "https://note-app-six-drab.vercel.app" // Deployed frontend
 ];
 
@@ -30,14 +28,18 @@ const corsOptions = {
             callback(new Error("Not allowed by CORS"));
         }
     },
-    methods: "GET,POST,PUT,DELETE", // Allowed HTTP methods
+    methods: "GET,POST,PUT,DELETE,OPTIONS", // Include OPTIONS here
     allowedHeaders: "Content-Type,Authorization", // Allowed headers
+    credentials: true, // Allow cookies and authentication headers
 };
 
 // Apply the CORS middleware
 app.use(cors(corsOptions));
 
+// Explicitly handle preflight `OPTIONS` requests
+app.options("*", cors(corsOptions));
 
+// Middleware to parse JSON requests
 app.use(express.json());
 
 // Routes
