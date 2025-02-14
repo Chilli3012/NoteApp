@@ -16,24 +16,21 @@ const allowedOrigins = [
     "http://localhost:5173",    // Local development (Vite)
     "http://localhost:3000",    // Local testing of build (npx serve)
     "http://192.168.0.187:3000",
-    "https://note-app-six-drab.vercel.app/", // Deployed frontend
-    "https://note-app-anurags-projects-f957d74e.vercel.app/",
-    "https://note-app-git-main-anurags-projects-f957d74e.vercel.app/",
-    "https://silly-kelpie-977318.netlify.app/"
+    "https://note-app-six-drab.vercel.app", // Deployed frontend on Vercel
+    "https://silly-kelpie-977318.netlify.app" // Deployed frontend on Netlify
 ];
 
 const corsOptions = {
     origin: (origin, callback) => {
         if (allowedOrigins.includes(origin) || !origin) {
-            // Allow requests with matching origins or server-to-server calls (no origin)
             callback(null, true);
         } else {
             callback(new Error("Not allowed by CORS"));
         }
     },
-    methods: "GET,POST,PUT,DELETE,OPTIONS", // Include OPTIONS here
-    allowedHeaders: "Content-Type,Authorization", // Allowed headers
-    credentials: true, // Allow cookies and authentication headers
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true,
 };
 
 // Apply the CORS middleware
@@ -41,6 +38,7 @@ app.use(cors(corsOptions));
 
 // Explicitly handle preflight `OPTIONS` requests
 app.options("*", cors(corsOptions));
+
 
 app.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.path}`);
