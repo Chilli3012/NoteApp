@@ -16,7 +16,9 @@ const allowedOrigins = [
     "http://localhost:5173",    // Local development (Vite)
     "http://localhost:3000",    // Local testing of build (npx serve)
     "http://192.168.0.187:3000",
-    "https://note-app-six-drab.vercel.app" // Deployed frontend
+    "https://note-app-six-drab.vercel.app/", // Deployed frontend
+    "https://note-app-anurags-projects-f957d74e.vercel.app/",
+    "https://note-app-git-main-anurags-projects-f957d74e.vercel.app/"
 ];
 
 const corsOptions = {
